@@ -34,5 +34,5 @@ def deactive():
 
 def start_up():
     if OVPN_USERNAME and OVPN_PASSWORD:
-        open("auth.txt").write(f"{OVPN_USERNAME}\n{OVPN_PASSWORD}")
+        open("auth.txt","w+").write(f"{OVPN_USERNAME}\n{OVPN_PASSWORD}")
     os.makedirs(configs,exist_ok=True)
