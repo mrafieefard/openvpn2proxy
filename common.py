@@ -17,14 +17,15 @@ def get_configs_list():
 
 def active_config(name : str):
     try:
-        subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")])
+        deactive()
+        subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         return True
     except Exception as e:
         print(e)
         return False
     
 def deactive():
-    subprocess.run(["killall","openvpn"])
+    subprocess.run(["killall","openvpn"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
 def start_up():
     os.makedirs(configs,exist_ok=True)
