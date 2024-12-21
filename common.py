@@ -4,8 +4,10 @@ from type import Config
 import sys
 import subprocess
 
-configs = os.path.join(os.curdir,"configs")
+from env import OVPN_PASSWORD,OVPN_USERNAME
 
+configs = os.path.join(os.curdir,"configs")
+auth_path = os.path.join(os.curdir,"auth.txt")
 def get_configs_list():
     list = []
 
@@ -18,7 +20,10 @@ def get_configs_list():
 def active_config(name : str):
     try:
         deactive()
-        subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        if OVPN_USERNAME and OVPN_PASSWORD:
+            subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn"),"--auth-user-pass",auth_path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        else:
+            subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         return True
     except Exception as e:
         print(e)
@@ -28,4 +33,6 @@ def deactive():
     subprocess.run(["killall","openvpn"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
 def start_up():
+    if OVPN_USERNAME and OVPN_PASSWORD:
+        open("auth.txt").write(f"{OVPN_USERNAME}\n{OVPN_PASSWORD}")
     os.makedirs(configs,exist_ok=True)
