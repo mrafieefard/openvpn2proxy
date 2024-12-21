@@ -21,16 +21,20 @@ def active_config(name : str):
     try:
         deactive()
         if OVPN_USERNAME and OVPN_PASSWORD:
-            subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn"),"--auth-user-pass",auth_path],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            p = subprocess.Popen(["openvpn","--config",os.path.join(configs,name+".ovpn"),"--auth-user-pass",auth_path],stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         else:
-            subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            p = subprocess.Popen(["openvpn","--config",os.path.join(configs,name+".ovpn")],stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        stdout,stderr = p.communicate()
+        print(stdout)
         return True
     except Exception as e:
         print(e)
         return False
     
 def deactive():
-    subprocess.run(["killall","openvpn"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    subprocess.Popen(["killall","openvpn"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 
 def start_up():
     if OVPN_USERNAME and OVPN_PASSWORD:
