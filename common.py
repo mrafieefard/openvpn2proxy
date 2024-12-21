@@ -15,11 +15,12 @@ def get_configs_list():
             
     return list
 
-def active_config(config : Config):
+def active_config(name : str):
     try:
-        subprocess.run(["openvpn","--config",os.path.join(configs,config.name+".ovpn")])
+        subprocess.run(["openvpn","--config",os.path.join(configs,name+".ovpn")])
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
     
 def deactive():
